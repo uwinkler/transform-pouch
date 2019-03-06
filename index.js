@@ -9,11 +9,11 @@ function isntInternalKey(key) {
   return key[0] !== '_';
 }
 
-function isUntransformable(doc) {
+function isTransformable(doc) {
   if (doc._deleted) {
-    return true;
-  } else {
     return false;
+  } else {
+    return true;
   }
 }
 
@@ -22,16 +22,18 @@ exports.transform = exports.filter = function transform(config) {
   var db = this;
 
   var incoming = function(doc) {
-    if (!isUntransformable(doc) && config.incoming) {
+    if (isTransformable(doc) && config.incoming) {
       return config.incoming(utils.clone(doc));
+    } else {
+      return doc;
     }
-    return doc;
   };
   var outgoing = function(doc) {
-    if (!isUntransformable(doc) && config.outgoing) {
+    if (!sTransformable(doc) && config.outgoing) {
       return config.outgoing(utils.clone(doc));
+    } else {
+      return doc;
     }
-    return doc;
   };
 
   var handlers = {};
